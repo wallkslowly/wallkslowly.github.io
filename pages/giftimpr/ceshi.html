@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ceshi</title>
+	<meta charset="utf-8" />
+	<script type="text/javascript" src="js/jquery-2.2.2.min.js"></script>
+	<script type="text/javascript" src="js/transition.js"></script>
+    <style>
+    	.left,
+		.right{		
+			height: 100px;
+			width: 100px;
+			opacity: 1;
+			z-index: 300;	
+			-webkit-border-radius: 50px;
+			-moz-border-radius: 50px;
+			border-radius: 50px;
+			overflow: hidden;
+			background: url('images/flower/duorou.png');
+			background-size: cover;
+		}
+		.wrap{
+			border: 1px solid black;
+			float: left;
+			margin-right: 100px;
+			height: 100px;
+			width: 100px;
+		}
+    </style>
+    <script>
+    	$(document).ready(function(){
+			$('.left').transition({
+				'transform': 'scale(1.5, 0.5) translate(0, 20px)',
+				'transformOrigin': 'bottom center'
+			}, 3000, 'ease-out', function(){
+				$(this).transition({
+					'transform': 'scale(0.3, 1.7)',
+					'transformOrigin': 'bottom center'
+				}, 300, 'ease-out', function(){
+					$(this).transition({
+						'transform': 'scale(1, 1)',
+						'transformOrigin': 'bottom center'
+					}, 200, 'ease-out',function(){})
+				})
+			})
+						$('.right').transition({
+				'transform': 'scale(1.5, 0.5)'
+			}, 3000, 'ease-out', function(){
+				$(this).transition({
+					'transform': 'scale(0.5, 1.5)'
+				}, 300, 'ease-out', function(){
+					$(this).transition({
+						'transform': 'scale(1, 1)'
+					}, 200, 'ease-out',function(){})
+				})
+			})
+			var arrtest = (function(){
+				var arr = [1,2,3];
+				var getArr = function(){
+					return arr.concat();
+				}
+				var alertArr = function(){
+					alert(arr);
+				}
+				return {
+					getArr: getArr,
+					alertArr: alertArr
+				}
+			})()
+			arrtest.alertArr();
+			var a = arrtest.getArr();
+			a.push(4);
+			arrtest.alertArr();
+		})
+    </script>
+</head>
+<body>
+        <div id="flower">
+        	<div class='wrap'>
+            	<div class="left">
+            	
+            	</div>
+            </div>
+           <div class='wrap'>
+            	<div class="right">
+            	
+            	</div>
+            </div>
+        </div>
+  
+</body>
+</html>

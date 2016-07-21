@@ -1,3 +1,17 @@
+
+var init = {
+	imageInit: function(){
+		$(".girl").css({
+			"background": "url('images/girl.png') no-repeat"
+		});
+		$("#flower div").css({
+			"background": "url('images/flower/duorou.png') center",
+		})
+		$("#bird").css({
+			"background": "url('images/bird.png') 0px 0px no-repeat"
+		})
+	}
+} 
 //小女孩控制
 var girlUtil = {
 	dtd: null,
@@ -11,7 +25,7 @@ var girlUtil = {
 		this.left = (topbackground.width() - girl.width())/2;
 		girl.css({
 			"top": -girl.height(),
-			"left": this.left
+			"left": this.left,
 		});
 	},
 	setGirl: function(){
@@ -96,10 +110,6 @@ var snowflakeUtil = {
 //多肉花控制
 var flowerUtil = {
 	dtd: null,
-	flowerArr: [
-				"images/flower/duorou1.jpg",
-				"images/flower/duorou2.jpg",
-			],
 	createFlower: function(){	
 		this.dtd = $.Deferred(); 
 		var topbackground = $(".bgtop");
@@ -134,6 +144,19 @@ var flowerUtil = {
 		});
 		return this.dtd.promise();
 	},
+	sacleFlower: function(){
+		$('#flower div').transition({
+				'transform': 'scale(1.05, 0.95)'
+			}, 300, 'ease-out', function(){
+				$(this).transition({
+					'transform': 'scale(0.96, 1.04)'
+				}, 300, 'ease-out', function(){
+					$(this).transition({
+						'transform': 'scale(1, 1)'
+					}, 200, 'ease-out',function(){})
+				})
+		})
+	}
 }
 //文字控制
 var textUtil = {
@@ -156,8 +179,8 @@ var textUtil = {
 	getPos: function(){
 		var $text = $("#text");
 		var blankHeight = $(".bgtop").height()/5;
-		this.initLeft = (document.documentElement.clientWidth-$text.width())/2;//str
-		this.initTop = blankHeight/2;//str
+		this.initLeft = (document.documentElement.clientWidth-$text.width())/2;
+		this.initTop = blankHeight/2;
 	},
 	//num表示文字浮现的次数
 	playText: function(num){
@@ -273,13 +296,17 @@ var birdUtil = {
 //编排动画
 var animate = {
 	animationPlay: function(){
-		$.when(readyUtil.playReady()).done(function(){
+		var bgimg = new Image();
+		bgimg.src = "images/background/c_background_top.png";
+		bgimg.onload = function(){
+			$.when(readyUtil.playReady()).done(function(){
 			girlUtil.setPos();
 			textUtil.getPos();
 			//预加载飘花的图片，防止网络不好时第一波飘的花在下落一半时才加载
+			init.imageInit();
 			$snow = $("#snowflake");
 			$snow.css({"display": "none"});
-			for(i=0, len=snowflakeUtil.snowArr.length; i<len; i++){	
+			/*for(i=0, len=snowflakeUtil.snowArr.length; i<len; i++){	
 				console.log(snowflakeUtil.snowArr[i]);
 				var oDiv = document.createElement("div");
 				$snow.append(oDiv);
@@ -287,7 +314,14 @@ var animate = {
 					"backgroundImage": "url(" + snowflakeUtil.snowArr[i] + ")",
 					"display": "none"
 				})
-			}
+			}*/
+			//两种方法，这样可以不操作dom
+			var imgarr = new Array(snowflakeUtil.snowArr.length);
+			snowflakeUtil.snowArr.forEach(function(item, index, array){
+				var img = new Image();
+				img.src = snowflakeUtil.snowArr[index];
+				imgarr.push(img);
+			})
 			//这里如果用$snow.empty()会清除生成的div，但是会将加载的图片从缓存中删除
 			$snow.css({
 				"display": "block"
@@ -317,6 +351,7 @@ var animate = {
 				}, 2000)
 			})
 		})
+		}
 	},
 }
 
