@@ -1,5 +1,27 @@
 
 var init = {
+	//一个遮罩，需要的图片加载完就不显示了
+	waitDisplay: function(){
+		var $wait = $('#wait');
+		$wait.height($(window).height());
+		$wait.width($(window).width());
+		var $dots =  $('.waitcontent div');
+		var $dots0 = $dots.eq(0);
+		var $dots1 = $dots.eq(1);
+		var $dots2 = $dots.eq(2);
+		$dots0.css({'backgroundColor': 'rgb(204, 204, 204)'});
+		$dots1.css({'backgroundColor': 'rgb(204, 204, 204)'});
+		$dots2.css({'backgroundColor': 'rgb(204, 204, 204)'});
+		var num = 0;
+		setInterval(function(){
+			$dots.css({'backgroundColor': 'rgb(204, 204, 204)'});
+			$dots.eq(num).css({'backgroundColor': 'rgb(153, 153, 153)'});
+			num = (num+1)%3;
+		}, 1000)
+	},
+	stopDisplay: function(){
+		$('#wait').remove();
+	},
 	imageInit: function(){
 		$(".girl").css({
 			"background": "url('images/girl.png') no-repeat"
@@ -143,19 +165,6 @@ var flowerUtil = {
 			flowerUtil.dtd.resolve();
 		});
 		return this.dtd.promise();
-	},
-	sacleFlower: function(){
-		$('#flower div').transition({
-				'transform': 'scale(1.05, 0.95)'
-			}, 300, 'ease-out', function(){
-				$(this).transition({
-					'transform': 'scale(0.96, 1.04)'
-				}, 300, 'ease-out', function(){
-					$(this).transition({
-						'transform': 'scale(1, 1)'
-					}, 200, 'ease-out',function(){})
-				})
-		})
 	}
 }
 //文字控制
@@ -226,10 +235,8 @@ var readyUtil = {
 			});
 		}
 		var that = this;
-		setTimeout(function(){
 			$("#ready").addClass("readyframe");
-		}, 1000)
-		setTimeout(task, 3000);
+		setTimeout(task, 2000);
 		return this.dtd.promise();
 	},
 	playEnd: function(){
@@ -296,9 +303,11 @@ var birdUtil = {
 //编排动画
 var animate = {
 	animationPlay: function(){
+		init.waitDisplay();
 		var bgimg = new Image();
 		bgimg.src = "images/background/c_background_top.png";
-		bgimg.onload = function(){
+		bgimg.onload=bgimg.onerror =  function(){
+			init.stopDisplay();
 			$.when(readyUtil.playReady()).done(function(){
 			girlUtil.setPos();
 			textUtil.getPos();
