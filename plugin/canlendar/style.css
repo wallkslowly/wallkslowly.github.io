@@ -1,0 +1,106 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+html{
+	font-size: 15px;
+}
+#wrapper{
+	padding: 10px 0;
+	border: 1px solid #0CF;
+	width: 200px;
+}
+/*下面是日历的部分*/
+#title{
+	text-align: center;
+	margin: 5px auto;
+	width: 175px;
+	font-size: 0.9rem;
+	overflow: auto;
+}
+#title div{
+	display: inline-block;
+}
+.left-bar{
+	float: left;
+}
+.right-bar{
+	float: right;
+}
+.left-bar,
+.right-bar{
+	cursor: pointer;
+}
+#year{
+	display: inline-block;
+	width: 3em;
+}
+#month{
+	display: inline-block;
+	width: 1.5em;
+}
+.middle{
+	margin: 0 5px;
+	font-weight: bold;
+}
+.single-left, .double-left,
+.single-right, .double-right{
+	height: 9px;
+}
+.double-left{
+	width: 9px;
+	background: url(icon.png) no-repeat;
+}
+.single-left{
+	margin-left: 5px;
+	width: 5px;
+	background: url(icon.png) -9px 0 no-repeat;
+}
+.double-right{
+	width: 9px;
+	background: url(icon.png) -19px 0 no-repeat;
+}
+.single-right{
+	margin-right: 5px;
+	width: 5px;
+	background: url(icon.png) -14px 0 no-repeat;
+}
+#content{
+	padding: 0;
+}
+#content table{
+	margin: 0 auto;
+}
+#content td{
+	width: 25px;
+	height: 25px;
+	text-align: center;
+	vertical-align: middle;
+	box-sizing: border-box;
+	font-size: 1rem;
+}
+#content thead td:first-child,
+#content thead td:last-child{
+	font-weight: bold;
+}
+#content tbody td{
+	border-left: 1px solid #ccc;
+	border-top: 1px solid #ccc;
+	font-size: 0.9rem;
+	font-weight: bold;
+	transition: all 0.5s ease-out;
+}
+#content tbody td[class*=mark]:hover{
+	cursor: pointer;
+	background: #0cf;
+}
+#content tbody td:last-of-type{
+	border-right: 1px solid #ccc;
+}
+#content tbody tr:last-of-type td{
+	border-bottom: 1px solid #ccc;
+}
+.illegal{
+	font-weight: normal !important;
+	color: #999;
+}
