@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>mobile</title>
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+		}
+    	#grey{
+			margin: 0 auto;
+			width: 320px;
+			height: 300px;
+			background-color: #ccc;
+			text-align: center;
+			line-height: 300px;
+			font-size: 20px;
+		}
+    </style>
+</head>
+
+<body>
+	<div id="grey">touchpad</div>
+	<script>
+		var start = {x:0, y:0};
+		var end = {x:0, y:0};
+		var doc = document.querySelector('#grey');
+    	function handler(e){
+			var eventType = e.type;
+			
+			switch(eventType){
+				case startEvt:
+					if(startEvt === 'mousedown'){
+						start.x = e.clientX;
+						start.y = e.clientY;
+					}else{
+						start.x = e.touches[0].clientX;
+						start.y = e.touches[0].clientY;
+					}
+					break;
+				case moveEvt:
+					if(moveEvt === 'touchmove'){
+						end.x = e.touches[0].clientX;
+						end.y = e.touches[0].clientY;
+					}
+					break;
+				case endEvt:
+					if(endEvt === 'mouseup'){
+						end.x = e.clientX;
+						end.y = e.clientY;
+					}
+					if(Math.sqrt(Math.pow(end.x-start.x,2)+Math.pow(end.y-end.x,2)) >= 30){
+						setText(end, start);
+					}
+					break;
+			}	
+		}
+		function setText(end, start){
+			var lenX = end.x - start.x;
+			var lenY = end.y - start.y;
+			//heng xiang
+			if(Math.abs(lenX)>=Math.abs(lenY)){
+				if(lenX >= 0){
+					doc.innerHTML = 'right';
+				}else{
+					doc.innerHTML = 'left';
+				}
+			}else{
+				if(lenY >= 0){
+					doc.innerHTML = 'down';
+				}else{
+					doc.innerHTML = 'up';
+				}
+			}
+		}
+		if(window.touchstart){
+			startEvt = 'touchstart';
+			moveEvt = 'touchmove';
+			endEvt = 'touchend';
+		}else{
+			startEvt = 'mousedown';
+			moveEvt = 'mousemove';
+			endEvt = 'mouseup';
+		}
+		window.addEventListener(startEvt, handler, false);
+		window.addEventListener(moveEvt, handler, false);
+		window.addEventListener(endEvt, handler, false);
+   	</script>
+</body>
+</html>
