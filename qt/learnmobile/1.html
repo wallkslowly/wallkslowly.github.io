@@ -55,6 +55,8 @@
 					if(Math.sqrt(Math.pow(end.x-start.x,2)+Math.pow(end.y-end.x,2)) >= 30){
 						setText(end, start);
 					}
+					start = {x:0, y:0};
+					end = {x:0, y:0};
 					break;
 			}	
 		}
@@ -76,6 +78,20 @@
 				}
 			}
 		}
+		function handlerges(e){
+			var eventType = e.type;
+			switch(eventType){
+				case 'gesturestart':
+					document.querySelector('#grey').innerHTML = 'gesturestart';
+					break;
+				case 'gesturemove':
+					document.querySelector('#grey').innerHTML = 'gesturemove';
+					break;
+				case 'gestureend':
+					document.querySelector('#grey').innerHTML = 'gestureend';
+					break;
+			}	
+		}
 		if('ontouchstart' in window){
 			startEvt = 'touchstart';
 			moveEvt = 'touchmove';
@@ -88,6 +104,11 @@
 		window.addEventListener(startEvt, handler, false);
 		window.addEventListener(moveEvt, handler, false);
 		window.addEventListener(endEvt, handler, false);
+		if('ongesturestart' in window){
+			window.addEventListener('gesturestart', handlerges, false);
+			window.addEventListener('gesturemove', handlerges, false);
+			window.addEventListener('gestureend', handlerges, false);
+		}
    	</script>
 </body>
 </html>
