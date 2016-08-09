@@ -29,7 +29,6 @@
 		var doc = document.querySelector('#grey');
     	function handler(e){
 			var eventType = e.type;
-			
 			switch(eventType){
 				case startEvt:
 					if(startEvt === 'mousedown'){
@@ -39,6 +38,7 @@
 						start.x = e.touches[0].clientX;
 						start.y = e.touches[0].clientY;
 					}
+					console.log(start.x, start.y);
 					break;
 				case moveEvt:
 					if(moveEvt === 'touchmove'){
@@ -52,7 +52,8 @@
 						end.x = e.clientX;
 						end.y = e.clientY;
 					}
-					if(Math.sqrt(Math.pow(end.x-start.x,2)+Math.pow(end.y-end.x,2)) >= 30){
+					var distance2 = Math.pow(end.x-start.x,2)+Math.pow(end.y-start.y,2)
+					if(Math.sqrt(distance2) >= 30){
 						setText(end, start);
 					}
 					start = {x:0, y:0};
@@ -84,8 +85,8 @@
 				case 'gesturestart':
 					document.querySelector('#grey').innerHTML = 'gesturestart';
 					break;
-				case 'gesturemove':
-					document.querySelector('#grey').innerHTML = 'gesturemove';
+				case 'gesturechange':
+					document.querySelector('#grey').innerHTML = 'gesturechange';
 					break;
 				case 'gestureend':
 					document.querySelector('#grey').innerHTML = 'gestureend';
@@ -101,13 +102,14 @@
 			moveEvt = 'mousemove';
 			endEvt = 'mouseup';
 		}
-		window.addEventListener(startEvt, handler, false);
-		window.addEventListener(moveEvt, handler, false);
-		window.addEventListener(endEvt, handler, false);
+		
+		doc.addEventListener(startEvt, handler, false);
+		doc.addEventListener(moveEvt, handler, false);
+		doc.addEventListener(endEvt, handler, false);
 		if('ongesturestart' in window){
-			window.addEventListener('gesturestart', handlerges, false);
-			window.addEventListener('gesturemove', handlerges, false);
-			window.addEventListener('gestureend', handlerges, false);
+			doc.addEventListener('gesturestart', handlerges, false);
+			doc.addEventListener('gesturechange', handlerges, false);
+			doc.addEventListener('gestureend', handlerges, false);
 		}
    	</script>
 </body>
