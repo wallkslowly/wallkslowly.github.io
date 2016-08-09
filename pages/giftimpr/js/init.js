@@ -313,8 +313,8 @@ var animate = {
 			textUtil.getPos();
 			//预加载飘花的图片，防止网络不好时第一波飘的花在下落一半时才加载
 			init.imageInit();
-			$snow = $("#snowflake");
-			$snow.css({"display": "none"});
+			//$snow = $("#snowflake");
+			//$snow.css({"display": "none"});
 			/*for(i=0, len=snowflakeUtil.snowArr.length; i<len; i++){	
 				console.log(snowflakeUtil.snowArr[i]);
 				var oDiv = document.createElement("div");
@@ -332,9 +332,9 @@ var animate = {
 				imgarr.push(img);
 			})
 			//这里如果用$snow.empty()会清除生成的div，但是会将加载的图片从缓存中删除
-			$snow.css({
-				"display": "block"
-			});
+			//$snow.css({
+			//	"display": "block"
+			//});
 			$.when(textUtil.playText(5)).done(function(){
 				girlUtil.setGirl();
 				setTimeout(function(){
