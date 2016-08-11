@@ -1,4 +1,8 @@
-
+var ismobile = (function(){
+	if(window.innerWidth <= 450){
+		return true;
+	}
+})()
 var init = {
 	//一个遮罩，需要的图片加载完就不显示了
 	waitDisplay: function(){
@@ -23,14 +27,18 @@ var init = {
 		$('#wait').remove();
 	},
 	imageInit: function(){
+		//为了预加载
 		$(".girl").css({
-			"background": "url('images/girl.png') no-repeat"
+			"background": "url('images/girl.png') no-repeat",
+			"background-size": "cover"
 		});
 		$("#flower div").css({
 			"background": "url('images/flower/duorou.png') center",
+			"background-size": "cover"
 		})
 		$("#bird").css({
-			"background": "url('images/bird.png') 0px 0px no-repeat"
+			"background": "url('images/bird.png') 0px 0px no-repeat",
+			"background-size": "cover"
 		})
 	}
 } 
@@ -79,9 +87,14 @@ var snowflakeUtil = {
 		var snow = document.createElement("div");
 		var maxWidth = $("#container").width();
 		//只在桥附近飘花
-		var offsetLeft = maxWidth/4;
-		var Beginleft = offsetLeft + Math.floor(Math.random()*offsetLeft*2);
-		var EndLeft = offsetLeft + Math.floor(Math.random()*offsetLeft*2);
+		if(ismobile){
+			var Beginleft = Math.floor(Math.random()*maxWidth);
+			var EndLeft = Math.floor(Math.random()*maxWidth);
+		}else{
+			var offsetLeft = maxWidth/4;
+			var Beginleft = offsetLeft + Math.floor(Math.random()*offsetLeft*2);
+			var EndLeft = offsetLeft + Math.floor(Math.random()*offsetLeft*2);
+		}
 		var EndTop = $("#container").height();
 		$div = $("#snowflake");
 		$div.append(snow);
@@ -134,36 +147,64 @@ var flowerUtil = {
 	dtd: null,
 	createFlower: function(){	
 		this.dtd = $.Deferred(); 
-		var topbackground = $(".bgtop");
 		var girl = $(".girl");
-		var startLeft1 = topbackground.width()/4;
-		var startLeft2 = topbackground.width()/4*3;
-		var endLeft1 = parseInt(girl.css("left"));
-		var endLeft2 = parseInt(girl.css("left")) + girl.width();
-		var endTop = topbackground.height();
-		
-		//只在桥附近飘花
-		$flowerPic1 = $(".left");
-		$flowerPic1.css({		
-			"left": startLeft1,
-		});	
-		$flowerPic1.transition({
-			left: endLeft1-100,
-			top: endTop-100,
-			opacity: 0.7
-		}, 5000, "ease-out", function(){});
-		//右侧
-		$flowerPic2 = $(".right");
-		$flowerPic2.css({	
-			"left": startLeft2,
-		});	
-		$flowerPic2.transition({
-			left: endLeft2,
-			top: endTop-100,
-			opacity: 0.7
-		}, 5000, "ease-out", function(){
-			flowerUtil.dtd.resolve();
-		});
+		var topbackground = $(".bgtop");
+		var $flowerPic1 = $(".left");
+		var $flowerPic2 = $(".right");
+		if(ismobile){
+			/*$flowerPic1.css({		
+				"left": parseInt(girl.css("left")) - parseInt($flowerPic1.width()),
+				"top": topbackground.height()
+			});	
+			$flowerPic2.css({		
+				"left": parseInt(girl.css("left")) + girl.width(),
+				"top": topbackground.height()
+			});*/
+			$flowerPic1.css({		
+				"left": 10,
+				"top": topbackground.height()
+			});	
+			$flowerPic2.css({		
+				"right": 10,
+				"top": topbackground.height()
+			});
+			$flowerPic1.transition({
+				opacity: 0.7
+			}, 2500, "ease-out", function(){});	
+			$flowerPic2.transition({
+				opacity: 0.7
+			}, 2500, "ease-out", function(){
+				setTimeout(function(){
+					flowerUtil.dtd.resolve();
+				}, 2500);
+			});
+		}else{
+			var startLeft1 = topbackground.width()/4;
+			var startLeft2 = topbackground.width()/4*3;
+			var endLeft1 = parseInt(girl.css("left"));
+			var endLeft2 = parseInt(girl.css("left")) + girl.width();
+			var endTop = topbackground.height();
+
+			$flowerPic1.css({		
+				"left": startLeft1,
+			});	
+			$flowerPic1.transition({
+				left: endLeft1-100,
+				top: endTop-100,
+				opacity: 0.7
+			}, 5000, "ease-out", function(){});
+			//右侧
+			$flowerPic2.css({	
+				"left": startLeft2,
+			});	
+			$flowerPic2.transition({
+				left: endLeft2,
+				top: endTop-100,
+				opacity: 0.7
+			}, 5000, "ease-out", function(){
+				flowerUtil.dtd.resolve();
+			});
+		}
 		return this.dtd.promise();
 	}
 }
@@ -230,6 +271,7 @@ var readyUtil = {
 		var clientWidth = document.documentElement.clientWidth;
 		var clientHeight = document.documentElement.clientHeight;
 		var task = function(){
+			$("#ready").remove();
 			$("#container").slideDown(5000, function(){
 				readyUtil.dtd.resolve();
 			});
@@ -262,9 +304,11 @@ var birdUtil = {
 		if(this.dtd === null){
 			this.dtd = $.Deferred();
 		}
-		var initLeft = parseInt(girlUtil.left) + $(".girl").width();
-		var endLeft = parseInt(girlUtil.left);
 		$bird = $("#bird");
+		var initLeft = parseInt(girlUtil.left) + $(".girl").width();
+		var endLeft = parseInt(girlUtil.left) - $("#bird").width()/3;
+		console.log( $("#bird").width())
+		console.log( $(".girl").width())
 		$bird.empty();
 		var oDiv = document.createElement("div");
 		var $div = $(oDiv);
