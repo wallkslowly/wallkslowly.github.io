@@ -479,7 +479,6 @@ div[class^=star]{
 	font-size: 100px;
 	color: #ccc;
 	text-align: center;
-	display: none;
 }
 .waitcontent div{
 	display: inline-block;

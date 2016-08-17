@@ -307,8 +307,6 @@ var birdUtil = {
 		$bird = $("#bird");
 		var initLeft = parseInt(girlUtil.left) + $(".girl").width();
 		var endLeft = parseInt(girlUtil.left) - $("#bird").width()/3;
-		console.log( $("#bird").width())
-		console.log( $(".girl").width())
 		$bird.empty();
 		var oDiv = document.createElement("div");
 		var $div = $(oDiv);
@@ -407,5 +405,4 @@ var animate = {
 		}
 	},
 }
-
 animate.animationPlay();
