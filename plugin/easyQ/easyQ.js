@@ -1,4 +1,4 @@
-//调用$()，其实是返回以init函数为构造器的对象，定义在jQuery上的函数不能通过this访问，必须通过jQuery访问
+//调用$()，其实是返回以init函数为构造器的对象，定义在easyQ上的函数不能通过this访问，必须通过easyQ访问
 (function(){
 	var window = this;
 	window.$ = window.easyQ = $ = easyQ = function(selector, context){
@@ -136,10 +136,9 @@
 					this.innerHTML += param;
 					console.log(this)
 				})*/
-				var len = this.length;
-				for(var i=len-1; i>=0; i--){
-					this[i].innerHTML += param;
-				}
+				this.each(function(){
+					this.insertAdjacentHTML('afterbegin', param);
+				})
 			}
 			if(param.nodeType === 1){
 				this.each(function(){
@@ -177,9 +176,33 @@
 			}
 		},
 		before: function(param){
-			this.insert('insertBefore', param);
+			if(typeof param === 'string'){
+				this.each(function(){
+					this.insertAdjacentHTML('beforebegin', param);
+				})
+			}
+			if(param.nodeType === 1){
+				this.each(function(){
+					var copy = param.cloneNode(true);
+					this.parentNode.insertBefore(copy, this);
+				})	
+			}
+			if(param.end){
+				this.each(function(){
+					var len = param.length;
+					for(var i=0; i<len; i++){
+						var copy = param[i].cloneNode(true);
+						this.parentNode.insertBefore(copy, this);
+					}
+				})
+			}
 		},
 		after: function(param){
+			if(typeof param === 'string'){
+				this.each(function(){
+					this.insertAdjacentHTML('afterend', param);
+				})
+			}
 			if(param.nodeType === 1){
 				this.each(function(){
 					var copy = param.cloneNode(true);
@@ -228,9 +251,136 @@
 			}
 			this.merge();
 		},
+		attr: function(key, value){
+			if(value){
+				if(key === 'id'){
+					this[0].settAttribute(key, value);
+				}else{
+					this.each(function(){
+						this.setAttribute(key, value);
+					})
+				}
+			}else{
+				return this[0].getAttribute(key);
+			}
+		},
+		removeAttr: function(key){
+			this.each(function(){
+				this.removeAttribute(key);
+				
+			})
+		},
+		addClass: function(className){
+			this.each(function(){
+				this.classList.add(className);
+			})
+			return this.merge();
+		},
+		removeClass: function(className){
+			this.each(function(){
+				this.classList.remove(className);
+			})
+		},
+		toggleClass: function(className){
+			this.each(function(){
+				this.classList.toggle(className);
+			})
+		},
+		val: function(){
+			if(this[0].type.toLowerCase()==='checkbox' || this[0].type.toLowerCase()==='radio'){
+				var len = this.length
+				var ret = '';
+				for(var i=0; i<len; i++){
+					if(this[i].checked){
+						ret += this[i].value + ' ';
+					}
+				}
+				return ret;
+			}
+			return this[0].value;	
+		},
+		//需要传入标准的css值，如width值为200px
+		css: function(){
+			if(arguments.length === 1){
+				//处理.css(key)情况
+				if(typeof arguments[0] === 'string'){
+					var demo = easyQ.cssText(this[0]);
+					return demo[arguments[0]];
+				}
+				//处理.css({})情况
+				if(typeof arguments[0] === 'object'){
+					var params = arguments[0];
+					this.each(function(){
+						for(var i in params){
+							this.style[i] = params[i];
+						}
+					})
+				}
+			}
+			if(arguments.length === 2){
+				this[0].style[arguments[0]] = arguments[1];
+			}
+		},
+		parent: function(){
+			var parent = this[0].parentNode;
+			parent = parent || window;
+			parent = $(parent);
+			parent.prevObj = this;
+			return parent;
+		},
+		next: function(){
+			var next = this[0].nextElementSibling();
+			next = next || "";
+			next = $(next);
+			next.prevObj = this;
+			return next;
+		},
+		prev: function(){
+			var prev = this[0].previousElementSibling();
+			prev = prev || "";
+			prev = $(prev);
+			prev.prevObj = this;
+			return prev;
+		},
+		children: function(){
+			var children = this[0].children;
+			children = children || "";
+			children = $(children);
+			children.prevObj = this;
+			return children;
+		},
 		test: function(){
 			console.log("asd");
 			console.log(this);
+		},
+		//可以添加自定义的事件
+		bind: function(type, fn, data){
+			this.each(function(){
+				easyQ.event.add(this, type, fn, data);
+			})
+		},
+		unbind: function(type, fn){
+			this.each(function(){
+				easyQ.event.remove(this, type, fn);
+			})
+		},
+		//触发自定义的事件
+		fire: function(type, detail){
+			if(document.createEvent){
+				var ev = document.createEvent('CustomEvent');
+				ev.initCustomEvent(type, true, true, detail);
+				this.each(function(){
+					this.dispatchEvent(ev);
+				})
+			}else if(document.createEventObject){
+				ev = document.createEventObject();
+				this.each(function(){
+					this.fireEvent(type, ev);
+				})
+			}
+		},
+		ready: function(fn){
+			easyQ.event.add(this[0], 'DOMContentLoaded', fn);
 		}
 	}
 	easyQ.fn.init.prototype = easyQ.fn;
@@ -288,10 +438,76 @@
 		}
 		return ret;
 	}
+	easyQ.cssText = function(node){
+		if(node.currentStyle){
+			easyQ.cssText = function(node){
+				return node.currentStyle;
+			}
+		}else{
+			easyQ.cssText = function(node){
+				return window.getComputedStyle(node);
+			}
+		}
+		return easyQ.cssText(node);
+	}
 	easyQ.extend = easyQ.fn.extend = function(obj){
 		if(typeof obj === 'object'){
 			for(var prop in obj){
 				this[prop] = obj[prop];
+			}
+		}
+	}
+	easyQ.event = {
+		add: function(node, type, fn, data){
+			if(node.addEventListener){
+				node.addEventListener(type, fn, false);
+			}else if(node.attchEvent){
+				node.attachEvent('on'+type, fn);
+			}else{
+				node['on'+type] = fn;
+			}
+		},
+		remove: function(node, type, fn){
+			if(node.removeEventListener){
+				node.removeEventListener(type, fn, false);
+			}else if(node.detachEvent){
+				node.detachEvent('on'+type, fn);
+			}else{
+				node['on'+type] = null;
+			}
+		}
+	}
+	easyQ.createXHR = function(){
+		if(typeof XMLHttpRequest !== 'undefined'){
+			easyQ.createXHR = function(){
+				return new XMLHttpRequest();
+			}
+		}else if(typeof ActiveXObject !== 'undefined'){
+			var versions = ["MSXML2.XMLHttp.6.0", "MSXML2.XMLHttp.3.0","MSXML2.XMLHttp"];
+			for(var i=0; i<versions.length; i++){
+				try{
+					new ActiveXObject(versions[i]);
+					easyQ.createXHR = function(){
+						return new ActiveXObject(varsions[i]);
+					}
+				}catch(ex){}
+			}
+		}else{
+			throw new error('无法使用ajax');
+		}
+	}
+	easyQ.ajax = function(method, url, data, callback){
+		var xhr = easyQ.createXHR();
+		xhr.open(method, url, false);
+		if(method === 'get'){
+			data = null;
+		}
+		xhr.send(data);
+		xhr.onreadyStateChange = function(){
+			if(xhr.readyState ==4){
+				if(xhr.status>=200&&xhr.status<300 || xhr.status==304){
+					callback.call(null, xhr.responseText);
+				}
 			}
 		}
 	}
