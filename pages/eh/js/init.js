@@ -293,7 +293,7 @@ var readyUtil = {
 	playEnd: function(){
 		$("#container").slideUp(5000,function(){
 			setTimeout(function(){
-				document.body.style.background = '#BFBFFF';
+				document.body.style.background = 'linear-gradient(#8080FF 30%, #FF80FF 90%) no-repeat';
 				document.body.style.width = document.documentElement.clientWidth + 'px';
 				document.body.style.height = document.documentElement.clientHeight + 'px';
 				var $end = $("#end");
@@ -376,10 +376,6 @@ var animate = {
 				img.src = snowflakeUtil.snowArr[index];
 				imgarr.push(img);
 			})
-			//这里如果用$snow.empty()会清除生成的div，但是会将加载的图片从缓存中删除
-			//$snow.css({
-			//	"display": "block"
-			//});
 			$.when(textUtil.playText(5)).done(function(){
 				girlUtil.setGirl();
 				setTimeout(function(){
