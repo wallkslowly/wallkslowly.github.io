@@ -281,7 +281,7 @@ var readyUtil = {
 		wrap.style.width = clientWidth + 'px';
 		wrap.style.height = clientHeight + 'px';
 		var date = new Date().getDate();
-		var datestr = '11月' + date + '日';
+		var datestr = '11月' + '6日';
 		$('#id1').html(datestr);
 			//$("#ready").addClass("readyframe");
 		setTimeout(function(){
