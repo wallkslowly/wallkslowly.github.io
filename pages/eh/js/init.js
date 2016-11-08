@@ -287,7 +287,7 @@ var readyUtil = {
 		setTimeout(function(){
 			$(".wrap").fadeOut(2000);
 		}, 4000)
-		setTimeout(task, 6000);
+		setTimeout(task, 8000);
 		return this.dtd.promise();
 	},
 	playEnd: function(){
